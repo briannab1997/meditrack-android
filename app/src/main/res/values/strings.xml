@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MediTrack</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_medications">Medications</string>
+    <string name="nav_history">History</string>
+
+    <!-- Dashboard -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="today_progress">Today\'s Progress</string>
+    <string name="doses_taken_format">%1$d of %2$d taken</string>
+    <string name="all_done">All done for today!</string>
+    <string name="streak_format">%d day streak</string>
+    <string name="streak_singular">1 day streak</string>
+    <string name="next_dose">Next Dose</string>
+    <string name="no_upcoming">No upcoming doses</string>
+    <string name="todays_schedule">Today\'s Schedule</string>
+    <string name="no_meds_today">No medications scheduled today.\nTap + to add one.</string>
+    <string name="mark_taken">Mark Taken</string>
+    <string name="taken">Taken</string>
+    <string name="undo">Undo</string>
+
+    <!-- Medications -->
+    <string name="my_medications">My Medications</string>
+    <string name="no_medications">No medications yet.\nTap + to add your first one.</string>
+    <string name="add_medication">Add Medication</string>
+    <string name="edit_medication">Edit Medication</string>
+    <string name="delete_medication">Delete Medication</string>
+    <string name="delete_confirm">Are you sure you want to delete %s?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="filter_all">All</string>
+    <string name="filter_morning">Morning</string>
+    <string name="filter_afternoon">Afternoon</string>
+    <string name="filter_evening">Evening</string>
+    <string name="filter_as_needed">As Needed</string>
+
+    <!-- Add / Edit form -->
+    <string name="medication_name">Medication Name</string>
+    <string name="dosage">Dosage (e.g. 500mg)</string>
+    <string name="frequency">Frequency</string>
+    <string name="schedule_times">Schedule Times</string>
+    <string name="prescriber">Prescriber (optional)</string>
+    <string name="refill_date">Refill Date</string>
+    <string name="pills_remaining">Pills Remaining</string>
+    <string name="pills_total">Total Pills</string>
+    <string name="notes">Notes (optional)</string>
+    <string name="choose_color">Choose a Color</string>
+    <string name="add_time">Add Time</string>
+    <string name="time_format">%02d:%02d</string>
+    <string name="freq_once_daily">Once daily</string>
+    <string name="freq_twice_daily">Twice daily</string>
+    <string name="freq_three_times">Three times daily</string>
+    <string name="freq_four_times">Four times daily</string>
+    <string name="freq_as_needed">As needed</string>
+    <string name="freq_weekly">Weekly</string>
+    <string name="name_required">Medication name is required</string>
+    <string name="dosage_required">Dosage is required</string>
+
+    <!-- Detail -->
+    <string name="medication_details">Medication Details</string>
+    <string name="dose_history">Dose History</string>
+    <string name="refill_in_format">Refill in %d days</string>
+    <string name="refill_overdue">Refill overdue</string>
+    <string name="pills_left_format">%d pills left</string>
+    <string name="compliance_format">%d%% compliance</string>
+    <string name="total_doses_format">%d total doses</string>
+    <string name="no_dose_history">No dose history yet.</string>
+
+    <!-- History -->
+    <string name="history">History</string>
+    <string name="weekly_compliance">Weekly Compliance</string>
+    <string name="no_history">No history to display yet.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Dose Reminders</string>
+    <string name="notification_channel_desc">Reminders to take your medications on schedule</string>
+    <string name="notification_title">Time to take %s</string>
+    <string name="notification_body">%s - %s</string>
+
+    <!-- Misc -->
+    <string name="refill_soon_format">Refill soon: %d left</string>
+    <string name="missed">Missed</string>
+    <string name="skipped">Skipped</string>
+    <string name="scheduled">Scheduled</string>
+</resources>

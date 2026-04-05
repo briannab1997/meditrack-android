@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.brianna.meditrack.ui.dashboard.DashboardFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/medicationsFragment"
+        android:name="com.brianna.meditrack.ui.medications.MedicationsFragment"
+        android:label="Medications"
+        tools:layout="@layout/fragment_medications">
+
+        <action
+            android:id="@+id/action_medications_to_add_edit"
+            app:destination="@id/addEditMedicationFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_down" />
+
+        <action
+            android:id="@+id/action_medications_to_detail"
+            app:destination="@id/medicationDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEditMedicationFragment"
+        android:name="com.brianna.meditrack.ui.addedit.AddEditMedicationFragment"
+        android:label="Add Medication"
+        tools:layout="@layout/fragment_add_edit_medication">
+
+        <argument
+            android:name="medicationId"
+            app:argType="long"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/medicationDetailFragment"
+        android:name="com.brianna.meditrack.ui.detail.MedicationDetailFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_medication_detail">
+
+        <argument
+            android:name="medicationId"
+            app:argType="long" />
+
+        <action
+            android:id="@+id/action_detail_to_edit"
+            app:destination="@id/addEditMedicationFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_down" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.brianna.meditrack.ui.history.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history" />
+
+</navigation>

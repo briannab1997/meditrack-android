@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand colors -->
+    <color name="primary">#1565C0</color>
+    <color name="primary_dark">#0D47A1</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="secondary">#00897B</color>
+    <color name="secondary_light">#B2DFDB</color>
+    <color name="tertiary">#7B1FA2</color>
+
+    <!-- Surfaces -->
+    <color name="background">#F4F6FB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#EEF2F8</color>
+    <color name="on_surface">#1A1C1E</color>
+    <color name="on_surface_variant">#44474F</color>
+
+    <!-- Dark theme surfaces -->
+    <color name="background_dark">#0F1117</color>
+    <color name="surface_dark">#1C1F26</color>
+    <color name="surface_variant_dark">#2A2E38</color>
+
+    <!-- Status colors -->
+    <color name="taken_green">#2E7D32</color>
+    <color name="taken_green_light">#C8E6C9</color>
+    <color name="missed_red">#C62828</color>
+    <color name="missed_red_light">#FFCDD2</color>
+    <color name="upcoming_amber">#E65100</color>
+    <color name="upcoming_amber_light">#FFE0B2</color>
+
+    <!-- Medication tag colors (user-selectable) -->
+    <color name="med_red">#EF5350</color>
+    <color name="med_orange">#FF7043</color>
+    <color name="med_amber">#FFA726</color>
+    <color name="med_green">#66BB6A</color>
+    <color name="med_teal">#26A69A</color>
+    <color name="med_blue">#42A5F5</color>
+    <color name="med_indigo">#5C6BC0</color>
+    <color name="med_purple">#AB47BC</color>
+    <color name="med_pink">#EC407A</color>
+    <color name="med_brown">#8D6E63</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="text_hint">#9E9E9E</color>
+</resources>
