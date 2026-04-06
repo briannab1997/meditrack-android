@@ -113,6 +113,29 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Schedule Times -->
+            <LinearLayout
+                android:id="@+id/ll_time_slots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Schedule Times"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_times"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
             <!-- Category Chips -->
             <TextView
                 android:layout_width="wrap_content"

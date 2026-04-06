@@ -1,6 +1,7 @@
 package com.brianna.meditrack.ui.addedit;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,8 +22,12 @@ import com.brianna.meditrack.data.model.Medication;
 import com.brianna.meditrack.databinding.FragmentAddEditMedicationBinding;
 import com.brianna.meditrack.util.DateUtils;
 import com.brianna.meditrack.viewmodel.MedicationViewModel;
+import com.google.android.material.chip.Chip;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddEditMedicationFragment extends Fragment {
 
@@ -31,7 +36,9 @@ public class AddEditMedicationFragment extends Fragment {
     private long medicationId = -1;
     private Medication existingMedication;
     private long selectedRefillDate = 0;
-    private int selectedColorHex = 0xFF42A5F5; // default blue
+    private int selectedColorHex = 0xFF42A5F5;
+
+    private final List<String> scheduledTimes = new ArrayList<>();
 
     private static final int[] COLORS = {
         0xFFEF5350, 0xFFFF7043, 0xFFFFA726, 0xFF66BB6A,
@@ -76,6 +83,10 @@ public class AddEditMedicationFragment extends Fragment {
         if (medicationId > 0) {
             binding.tvFormTitle.setText("Edit Medication");
             loadExistingMedication();
+        } else {
+            // Default to once daily with 8:00 AM
+            setDefaultTimes("ONCE_DAILY");
+            rebuildTimeChips();
         }
     }
 
@@ -86,6 +97,54 @@ public class AddEditMedicationFragment extends Fragment {
                 FREQUENCIES);
         binding.dropdownFrequency.setAdapter(adapter);
         binding.dropdownFrequency.setText(FREQUENCIES[0], false);
+
+        binding.dropdownFrequency.setOnItemClickListener((parent, v, position, id) -> {
+            setDefaultTimes(FREQUENCY_KEYS[position]);
+            rebuildTimeChips();
+        });
+    }
+
+    private void setDefaultTimes(String freqKey) {
+        scheduledTimes.clear();
+        switch (freqKey) {
+            case "ONCE_DAILY": scheduledTimes.add("08:00"); break;
+            case "TWICE_DAILY": scheduledTimes.addAll(Arrays.asList("08:00", "20:00")); break;
+            case "THREE_TIMES": scheduledTimes.addAll(Arrays.asList("08:00", "14:00", "20:00")); break;
+            case "FOUR_TIMES": scheduledTimes.addAll(Arrays.asList("08:00", "12:00", "16:00", "20:00")); break;
+            case "WEEKLY": scheduledTimes.add("09:00"); break;
+            case "AS_NEEDED": break; // no fixed schedule
+        }
+    }
+
+    private void rebuildTimeChips() {
+        binding.chipGroupTimes.removeAllViews();
+        binding.llTimeSlots.setVisibility(scheduledTimes.isEmpty() ? View.GONE : View.VISIBLE);
+
+        for (int i = 0; i < scheduledTimes.size(); i++) {
+            final int index = i;
+            Chip chip = new Chip(requireContext());
+            chip.setText(DateUtils.formatTimeFromString(scheduledTimes.get(i)));
+            chip.setCheckable(false);
+            chip.setCloseIconVisible(false);
+            chip.setChipBackgroundColorResource(R.color.surface_variant);
+            chip.setOnClickListener(v -> openTimePicker(index));
+            binding.chipGroupTimes.addView(chip);
+        }
+    }
+
+    private void openTimePicker(int index) {
+        String current = scheduledTimes.get(index);
+        int hour = 8, minute = 0;
+        try {
+            String[] parts = current.split(":");
+            hour = Integer.parseInt(parts[0]);
+            minute = Integer.parseInt(parts[1]);
+        } catch (Exception ignored) {}
+
+        new TimePickerDialog(requireContext(), (picker, h, m) -> {
+            scheduledTimes.set(index, String.format("%02d:%02d", h, m));
+            rebuildTimeChips();
+        }, hour, minute, false).show();
     }
 
     private void setupColorSwatches() {
@@ -103,10 +162,6 @@ public class AddEditMedicationFragment extends Fragment {
             drawable.setColor(color);
             swatch.setBackground(drawable);
 
-            if (color == selectedColorHex) {
-                drawable.setStroke((int)(3 * getResources().getDisplayMetrics().density), 0xFF000000);
-            }
-
             swatch.setOnClickListener(v -> {
                 selectedColorHex = color;
                 refreshSwatchBorders();
@@ -114,6 +169,7 @@ public class AddEditMedicationFragment extends Fragment {
 
             binding.llColorSwatches.addView(swatch);
         }
+        refreshSwatchBorders();
     }
 
     private void refreshSwatchBorders() {
@@ -162,7 +218,6 @@ public class AddEditMedicationFragment extends Fragment {
             binding.etName.setText(medication.getName());
             binding.etDosage.setText(medication.getDosage());
 
-            // Frequency
             String freq = medication.getFrequency();
             for (int i = 0; i < FREQUENCY_KEYS.length; i++) {
                 if (FREQUENCY_KEYS[i].equals(freq)) {
@@ -171,7 +226,15 @@ public class AddEditMedicationFragment extends Fragment {
                 }
             }
 
-            // Category chips
+            // Load saved times or fall back to defaults
+            scheduledTimes.clear();
+            if (medication.getScheduleTimes() != null && !medication.getScheduleTimes().isEmpty()) {
+                scheduledTimes.addAll(Arrays.asList(medication.getTimeArray()));
+            } else {
+                setDefaultTimes(medication.getFrequency() != null ? medication.getFrequency() : "ONCE_DAILY");
+            }
+            rebuildTimeChips();
+
             switch (medication.getCategory() != null ? medication.getCategory() : "Morning") {
                 case "Afternoon": binding.chipCatAfternoon.setChecked(true); break;
                 case "Evening":   binding.chipCatEvening.setChecked(true);   break;
@@ -184,18 +247,14 @@ public class AddEditMedicationFragment extends Fragment {
 
             if (medication.getPrescriber() != null)
                 binding.etPrescriber.setText(medication.getPrescriber());
-
             if (medication.getPillsRemaining() > 0)
                 binding.etPillsRemaining.setText(String.valueOf(medication.getPillsRemaining()));
-
             if (medication.getPillsTotal() > 0)
                 binding.etPillsTotal.setText(String.valueOf(medication.getPillsTotal()));
-
             if (medication.getRefillDate() > 0) {
                 selectedRefillDate = medication.getRefillDate();
                 binding.etRefillDate.setText(DateUtils.formatDisplayDate(selectedRefillDate));
             }
-
             if (medication.getNotes() != null)
                 binding.etNotes.setText(medication.getNotes());
         });
@@ -224,8 +283,8 @@ public class AddEditMedicationFragment extends Fragment {
         medication.setDosage(dosage);
         medication.setColorHex(selectedColorHex);
         medication.setRefillDate(selectedRefillDate);
+        medication.setScheduleTimes(String.join(",", scheduledTimes));
 
-        // Frequency
         String freqText = binding.dropdownFrequency.getText().toString();
         String freqKey = "ONCE_DAILY";
         for (int i = 0; i < FREQUENCIES.length; i++) {
@@ -235,19 +294,11 @@ public class AddEditMedicationFragment extends Fragment {
             }
         }
         medication.setFrequency(freqKey);
+        medication.setCategory(getSelectedCategory());
 
-        // Default schedule time based on category
-        String category = getSelectedCategory();
-        medication.setCategory(category);
-        if (medication.getScheduleTimes() == null || medication.getScheduleTimes().isEmpty()) {
-            medication.setScheduleTimes(defaultTimeForCategory(category));
-        }
-
-        // Prescriber
         if (binding.etPrescriber.getText() != null)
             medication.setPrescriber(binding.etPrescriber.getText().toString().trim());
 
-        // Pills
         try {
             String rem = binding.etPillsRemaining.getText() != null ?
                     binding.etPillsRemaining.getText().toString() : "";
@@ -260,7 +311,6 @@ public class AddEditMedicationFragment extends Fragment {
             if (!tot.isEmpty()) medication.setPillsTotal(Integer.parseInt(tot));
         } catch (NumberFormatException ignored) {}
 
-        // Notes
         if (binding.etNotes.getText() != null)
             medication.setNotes(binding.etNotes.getText().toString().trim());
 
@@ -279,15 +329,6 @@ public class AddEditMedicationFragment extends Fragment {
         if (id == R.id.chip_cat_evening)   return "Evening";
         if (id == R.id.chip_cat_as_needed) return "As Needed";
         return "Morning";
-    }
-
-    private String defaultTimeForCategory(String category) {
-        switch (category) {
-            case "Afternoon": return "12:00";
-            case "Evening":   return "20:00";
-            case "As Needed": return "";
-            default:          return "08:00";
-        }
     }
 
     @Override

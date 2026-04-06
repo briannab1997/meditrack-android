@@ -1,5 +1,9 @@
 package com.brianna.meditrack.ui.medications;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,15 +13,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.brianna.meditrack.R;
 import com.brianna.meditrack.data.model.Medication;
 import com.brianna.meditrack.databinding.FragmentMedicationsBinding;
 import com.brianna.meditrack.viewmodel.MedicationViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +54,7 @@ public class MedicationsFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(MedicationViewModel.class);
 
         setupRecyclerView();
+        setupSwipeToDelete();
         setupSearch();
         setupFilters();
         setupFab();
@@ -62,6 +71,73 @@ public class MedicationsFragment extends Fragment {
                     MedicationsFragmentDirections.actionMedicationsToDetail(medication.getId());
             Navigation.findNavController(binding.getRoot()).navigate(action);
         });
+    }
+
+    private void setupSwipeToDelete() {
+        Paint bgPaint = new Paint();
+        bgPaint.setColor(0xFFEF5350);
+
+        Drawable deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete);
+        int iconSize = (int) (24 * getResources().getDisplayMetrics().density);
+        float cornerRadius = (int) (14 * getResources().getDisplayMetrics().density);
+
+        ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView rv,
+                                  @NonNull RecyclerView.ViewHolder vh,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                Medication deleted = adapter.getCurrentList().get(position);
+
+                viewModel.deleteMedication(deleted);
+
+                Snackbar.make(binding.getRoot(), deleted.getName() + " removed", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", v -> viewModel.insertMedication(deleted, null))
+                        .show();
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c,
+                                    @NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder,
+                                    float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
+
+                View item = viewHolder.itemView;
+                int margin = (int) (12 * getResources().getDisplayMetrics().density);
+
+                // Red background behind the card
+                RectF bg = new RectF(
+                        item.getLeft() + margin,
+                        item.getTop() + margin,
+                        item.getRight() - margin,
+                        item.getBottom() - margin
+                );
+                c.drawRoundRect(bg, cornerRadius, cornerRadius, bgPaint);
+
+                // Delete icon on the right
+                if (deleteIcon != null) {
+                    int iconMargin = (item.getHeight() - iconSize) / 2;
+                    int iconTop    = item.getTop() + iconMargin;
+                    int iconBottom = iconTop + iconSize;
+                    int iconRight  = item.getRight() - iconMargin - margin;
+                    int iconLeft   = iconRight - iconSize;
+                    deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+                    deleteIcon.setTint(0xFFFFFFFF);
+                    deleteIcon.draw(c);
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+
+        new ItemTouchHelper(callback).attachToRecyclerView(binding.rvMedications);
     }
 
     private void setupSearch() {
@@ -85,11 +161,9 @@ public class MedicationsFragment extends Fragment {
     }
 
     private void setupFab() {
-        binding.fabAdd.setOnClickListener(v -> {
-            // default medicationId of -1 is defined on the destination, no arg needed here
-            Navigation.findNavController(v).navigate(
-                    MedicationsFragmentDirections.actionMedicationsToAddEdit());
-        });
+        binding.fabAdd.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(
+                        MedicationsFragmentDirections.actionMedicationsToAddEdit()));
     }
 
     private void observeData() {
@@ -107,13 +181,11 @@ public class MedicationsFragment extends Fragment {
 
         for (Medication med : allMedications) {
             boolean matchesQuery = query.isEmpty() ||
-                    med.getName().toLowerCase(Locale.getDefault()).contains(query.toLowerCase(Locale.getDefault()));
-            boolean matchesCategory = category == null ||
-                    category.equals(med.getCategory());
+                    med.getName().toLowerCase(Locale.getDefault())
+                            .contains(query.toLowerCase(Locale.getDefault()));
+            boolean matchesCategory = category == null || category.equals(med.getCategory());
 
-            if (matchesQuery && matchesCategory) {
-                filtered.add(med);
-            }
+            if (matchesQuery && matchesCategory) filtered.add(med);
         }
 
         adapter.submitList(filtered);
@@ -124,12 +196,12 @@ public class MedicationsFragment extends Fragment {
 
     @Nullable
     private String getSelectedCategory() {
-        int checkedId = binding.chipGroupFilter.getCheckedChipId();
-        if (checkedId == R.id.chip_morning)    return "Morning";
-        if (checkedId == R.id.chip_afternoon)  return "Afternoon";
-        if (checkedId == R.id.chip_evening)    return "Evening";
-        if (checkedId == R.id.chip_as_needed)  return "As Needed";
-        return null; // "All" selected
+        int id = binding.chipGroupFilter.getCheckedChipId();
+        if (id == R.id.chip_morning)   return "Morning";
+        if (id == R.id.chip_afternoon) return "Afternoon";
+        if (id == R.id.chip_evening)   return "Evening";
+        if (id == R.id.chip_as_needed) return "As Needed";
+        return null;
     }
 
     @Override
