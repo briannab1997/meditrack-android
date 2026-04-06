@@ -70,7 +70,8 @@ public class MedicationDetailFragment extends Fragment {
 
         binding.btnEdit.setOnClickListener(v -> {
             // Pass medicationId via the destination's args builder
-            Bundle args = new AddEditMedicationFragmentArgs.Builder((int) medicationId)
+            Bundle args = new AddEditMedicationFragmentArgs.Builder()
+                    .setMedicationId((int) medicationId)
                     .build().toBundle();
             Navigation.findNavController(binding.getRoot())
                     .navigate(R.id.action_detail_to_edit, args);
