@@ -12,9 +12,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.brianna.meditrack.R;
 import com.brianna.meditrack.data.model.Medication;
 import com.brianna.meditrack.databinding.FragmentMedicationDetailBinding;
-import com.brianna.meditrack.ui.medications.MedicationsFragmentDirections;
+import com.brianna.meditrack.ui.addedit.AddEditMedicationFragmentArgs;
 import com.brianna.meditrack.util.DateUtils;
 import com.brianna.meditrack.viewmodel.MedicationViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -68,9 +69,11 @@ public class MedicationDetailFragment extends Fragment {
                 Navigation.findNavController(binding.getRoot()).popBackStack());
 
         binding.btnEdit.setOnClickListener(v -> {
-            MedicationDetailFragmentDirections.ActionDetailToEdit action =
-                    MedicationDetailFragmentDirections.actionDetailToEdit(medicationId);
-            Navigation.findNavController(binding.getRoot()).navigate(action);
+            // Pass medicationId via the destination's args builder
+            Bundle args = new AddEditMedicationFragmentArgs.Builder((int) medicationId)
+                    .build().toBundle();
+            Navigation.findNavController(binding.getRoot())
+                    .navigate(R.id.action_detail_to_edit, args);
         });
 
         binding.btnDelete.setOnClickListener(v -> {
