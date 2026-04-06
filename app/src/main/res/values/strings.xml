@@ -52,7 +52,7 @@
     <string name="notes">Notes (optional)</string>
     <string name="choose_color">Choose a Color</string>
     <string name="add_time">Add Time</string>
-    <string name="time_format">%02d:%02d</string>
+    <string name="time_format">%1$02d:%2$02d</string>
     <string name="freq_once_daily">Once daily</string>
     <string name="freq_twice_daily">Twice daily</string>
     <string name="freq_three_times">Three times daily</string>
@@ -81,7 +81,7 @@
     <string name="notification_channel_name">Dose Reminders</string>
     <string name="notification_channel_desc">Reminders to take your medications on schedule</string>
     <string name="notification_title">Time to take %s</string>
-    <string name="notification_body">%s - %s</string>
+    <string name="notification_body">%1$s - %2$s</string>
 
     <!-- Misc -->
     <string name="refill_soon_format">Refill soon: %d left</string>

@@ -87,7 +87,7 @@ public class MedicationsFragment extends Fragment {
     private void setupFab() {
         binding.fabAdd.setOnClickListener(v -> {
             MedicationsFragmentDirections.ActionMedicationsToAddEdit action =
-                    MedicationsFragmentDirections.actionMedicationsToAddEdit(-1L);
+                    MedicationsFragmentDirections.actionMedicationsToAddEdit(-1);
             Navigation.findNavController(v).navigate(action);
         });
     }

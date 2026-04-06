@@ -64,7 +64,7 @@ public class AddEditMedicationFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(MedicationViewModel.class);
 
         if (getArguments() != null) {
-            medicationId = AddEditMedicationFragmentArgs.fromBundle(getArguments()).getMedicationId();
+            medicationId = (long) AddEditMedicationFragmentArgs.fromBundle(getArguments()).getMedicationId();
         }
 
         setupFrequencyDropdown();

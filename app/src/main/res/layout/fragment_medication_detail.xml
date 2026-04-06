@@ -46,7 +46,6 @@
                             android:layout_height="40dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/ic_back"
-                            android:imageTintList="@android:color/white"
                             android:contentDescription="Back" />
 
                         <View
@@ -60,7 +59,6 @@
                             android:layout_height="40dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/ic_edit"
-                            android:imageTintList="@android:color/white"
                             android:contentDescription="Edit" />
 
                         <ImageButton
@@ -69,7 +67,6 @@
                             android:layout_height="40dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/ic_delete"
-                            android:imageTintList="@android:color/white"
                             android:contentDescription="Delete" />
 
                     </LinearLayout>
