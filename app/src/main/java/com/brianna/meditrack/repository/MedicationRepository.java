@@ -9,6 +9,7 @@ import com.brianna.meditrack.data.dao.MedicationDao;
 import com.brianna.meditrack.data.db.MediTrackDatabase;
 import com.brianna.meditrack.data.model.DoseLog;
 import com.brianna.meditrack.data.model.Medication;
+import com.brianna.meditrack.util.ReminderScheduler;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -20,8 +21,10 @@ public class MedicationRepository {
     private final MedicationDao medicationDao;
     private final DoseLogDao doseLogDao;
     private final ExecutorService executor;
+    private final Application application;
 
     public MedicationRepository(Application application) {
+        this.application = application;
         MediTrackDatabase db = MediTrackDatabase.getInstance(application);
         medicationDao = db.medicationDao();
         doseLogDao = db.doseLogDao();
@@ -45,16 +48,24 @@ public class MedicationRepository {
     public void insertMedication(Medication medication, Consumer<Long> onInserted) {
         executor.execute(() -> {
             long id = medicationDao.insert(medication);
+            medication.setId(id);
+            ReminderScheduler.schedule(application, medication);
             if (onInserted != null) onInserted.accept(id);
         });
     }
 
     public void updateMedication(Medication medication) {
-        executor.execute(() -> medicationDao.update(medication));
+        executor.execute(() -> {
+            medicationDao.update(medication);
+            ReminderScheduler.schedule(application, medication);
+        });
     }
 
     public void deleteMedication(Medication medication) {
-        executor.execute(() -> medicationDao.delete(medication));
+        executor.execute(() -> {
+            medicationDao.delete(medication);
+            ReminderScheduler.cancel(application, medication.getId());
+        });
     }
 
     public void decrementPills(long medicationId) {
