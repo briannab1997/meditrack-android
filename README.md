@@ -58,7 +58,16 @@ meditrack/
 
 ## Screenshots
 
-> Coming soon
+<p align="center">
+  <img src="screenshots/Screenshot_20260405_211155.png" width="18%" alt="Dashboard"/>
+  <img src="screenshots/Screenshot_20260405_211302.png" width="18%" alt="Medications"/>
+  <img src="screenshots/Screenshot_20260405_211455.png" width="18%" alt="Add Medication"/>
+  <img src="screenshots/Screenshot_20260405_211504.png" width="18%" alt="Medication Card"/>
+  <img src="screenshots/Screenshot_20260405_211529.png" width="18%" alt="Detail Screen"/>
+</p>
+<p align="center">
+  <em>Dashboard &nbsp;&nbsp; Medications &nbsp;&nbsp; Add Medication &nbsp;&nbsp; Medication Card &nbsp;&nbsp; Detail Screen</em>
+</p>
 
 ---
 
